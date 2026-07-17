@@ -1,0 +1,221 @@
+{% extends "base.html" %} {% block title %}Batch Analyser — Sentiment Analyser{%
+endblock %} {% block head_extra %}
+<style>
+  .input-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+  }
+  .input-card label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text2);
+    margin-bottom: 6px;
+  }
+  .input-card .hint {
+    font-size: 0.78rem;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+  .input-card textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    font-family: "IBM Plex Mono", monospace;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    resize: vertical;
+    line-height: 1.65;
+    transition: border 0.18s;
+  }
+  .input-card textarea:focus {
+    border-color: var(--accent);
+  }
+  .input-card textarea::placeholder {
+    color: var(--text3);
+    font-family: "Outfit", sans-serif;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  /* Summary row */
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .results-header h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .summary-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .sum-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 99px;
+    border: 1px solid;
+  }
+  .sum-chip.pos {
+    background: var(--pos-lt);
+    color: var(--pos);
+    border-color: #a7f3d0;
+  }
+  .sum-chip.neg {
+    background: var(--neg-lt);
+    color: var(--neg);
+    border-color: #fecaca;
+  }
+  .sum-chip.neu {
+    background: var(--neu-lt);
+    color: var(--neu);
+    border-color: #fde68a;
+  }
+
+  /* Table */
+  .t-text {
+    max-width: 320px;
+    word-break: break-word;
+    color: var(--text2);
+    font-size: 0.83rem;
+  }
+  .bar-mini {
+    height: 3px;
+    border-radius: 99px;
+    margin-top: 4px;
+    max-width: 100%;
+  }
+  .bar-mini.positive {
+    background: var(--pos);
+  }
+  .bar-mini.negative {
+    background: var(--neg);
+  }
+  .bar-mini.neutral {
+    background: var(--neu);
+  }
+  .no-results {
+    font-size: 0.88rem;
+    color: var(--text2);
+    padding: 20px 0;
+  }
+</style>
+{% endblock %} {% block content %}
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="page-tag">Batch Mode</div>
+    <h1>Batch Analyser</h1>
+    <p>
+      Analyse up to 50 texts at once — paste one sentence per line. Results are
+      saved to your history.
+    </p>
+  </div>
+
+  <div class="input-card">
+    <form method="POST">
+      <label>Enter Texts</label>
+      <p class="hint">
+        One text per line · Maximum 50 lines · Each line is analysed
+        independently
+      </p>
+      <textarea
+        name="batch_text"
+        placeholder="I love this product!
+The service was terrible.
+It was okay, nothing special.
+Absolutely amazing experience!"
+      >
+{{ raw_input }}</textarea
+      >
+      <div class="btn-row">
+        <button type="submit" class="btn btn-primary">Analyse All</button>
+        {% if results %}
+        <a href="{{ url_for('export_csv') }}" class="btn btn-secondary"
+          >⬇ Export CSV</a
+        >
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  {% if results %} {% set pos_c = results | selectattr('css','eq','positive') |
+  list | length %} {% set neg_c = results | selectattr('css','eq','negative') |
+  list | length %} {% set neu_c = results | selectattr('css','eq','neutral') |
+  list | length %}
+
+  <div class="results-header">
+    <h2>{{ results | length }} Results</h2>
+    <div class="summary-chips">
+      <span class="sum-chip pos">😊 {{ pos_c }} Positive</span>
+      <span class="sum-chip neg">😔 {{ neg_c }} Negative</span>
+      <span class="sum-chip neu">😐 {{ neu_c }} Neutral</span>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 40px">#</th>
+          <th>Text</th>
+          <th>Label</th>
+          <th>Confidence</th>
+          <th>VADER</th>
+          <th>TextBlob</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+        <tr>
+          <td class="mono" style="color: var(--text3)">{{ loop.index }}</td>
+          <td class="t-text">{{ r.original_text }}</td>
+          <td>
+            <span class="badge {{ r.css }}">{{ r.emoji }} {{ r.label }}</span>
+          </td>
+          <td>
+            <span class="mono">{{ r.confidence }}%</span>
+            <div
+              class="bar-mini {{ r.css }}"
+              style="width:{{ [r.confidence, 100]|min }}%"
+            ></div>
+          </td>
+          <td class="mono">{{ r.vader_compound }}</td>
+          <td class="mono">{{ r.tb_polarity }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  {% elif request.method == 'POST' %}
+  <p class="no-results">No results — please enter at least one line of text.</p>
+  {% endif %}
+</div>
+{% endblock %}

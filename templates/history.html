@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% block title %}History - Sentiment Analyser{% endblock %}
+
+{% block head_extra %}
+<style>
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .filter-label {
+    font-size: 0.8rem;
+    color: var(--text2);
+    font-weight: 500;
+  }
+  .filter-bar select {
+    padding: 8px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.83rem;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    outline: none;
+    font-family: inherit;
+    transition: border 0.18s;
+  }
+  .filter-bar select:focus { border-color: var(--accent); }
+  .filter-btn {
+    padding: 8px 18px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 0.83rem;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .filter-btn:hover { background: var(--accent-h); }
+  .export-link {
+    margin-left: auto;
+    font-size: 0.82rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .export-link:hover { text-decoration: underline; }
+  .t-text {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text2);
+  }
+  .t-time { font-size: 0.75rem; color: var(--text3); white-space: nowrap; }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .page-btn {
+    padding: 7px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 0.82rem;
+    text-decoration: none;
+    color: var(--text2);
+    font-family: inherit;
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.18s;
+    display: inline-block;
+  }
+  .page-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .page-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+    font-weight: 700;
+  }
+  .page-btn.disabled { opacity: 0.4; pointer-events: none; }
+  .empty-state { padding: 60px 24px; text-align: center; color: var(--text2); }
+  .empty-state .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+  .empty-state p { font-size: 0.9rem; margin-top: 6px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="page-header">
+    <div class="page-tag">History</div>
+    <h1>Analysis History</h1>
+    <p>Browse and filter all your past sentiment analyses.</p>
+  </div>
+
+  <form method="GET" class="filter-bar">
+    <span class="filter-label">Label:</span>
+    <select name="label">
+      <option value="">All</option>
+      <option value="Positive" {% if label == "Positive" %}selected{% endif %}>Positive</option>
+      <option value="Negative" {% if label == "Negative" %}selected{% endif %}>Negative</option>
+      <option value="Neutral" {% if label == "Neutral" %}selected{% endif %}>Neutral</option>
+    </select>
+    <span class="filter-label">Mode:</span>
+    <select name="mode">
+      <option value="">All</option>
+      <option value="single" {% if mode == "single" %}selected{% endif %}>Single</option>
+      <option value="compare" {% if mode == "compare" %}selected{% endif %}>Compare</option>
+      <option value="batch" {% if mode == "batch" %}selected{% endif %}>Batch</option>
+    </select>
+    <button class="filter-btn" type="submit">Filter</button>
+    <a href="{{ url_for('export_csv') }}" class="export-link">&#8595; Export CSV</a>
+  </form>
+
+  {% if pagination.items %}
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th style="width: 44px">#</th>
+          <th>Text Preview</th>
+          <th>Label</th>
+          <th>Confidence</th>
+          <th>VADER</th>
+          <th>Mode</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in pagination.items %}
+        <tr>
+          <td class="mono" style="color: var(--text3)">{{ (pagination.page - 1) * 20 + loop.index }}</td>
+          <td class="t-text">{{ r.text }}</td>
+          <td><span class="badge {{ r.label | lower }}">{{ r.label }}</span></td>
+          <td class="mono">{{ r.confidence }}%</td>
+          <td class="mono">{{ r.vader_score }}</td>
+          <td><span class="mode-chip">{{ r.mode }}</span></td>
+          <td class="t-time">{{ r.created_at.strftime("%b %d, %Y %H:%M") }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    {% if pagination.has_prev %}
+    <a class="page-btn" href="{{ url_for('history', page=pagination.prev_num, label=label, mode=mode) }}">&#8592; Prev</a>
+    {% else %}
+    <span class="page-btn disabled">&#8592; Prev</span>
+    {% endif %}
+
+    {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+      {% if p %}
+        {% if p == pagination.page %}
+        <a class="page-btn active" href="{{ url_for('history', page=p, label=label, mode=mode) }}">{{ p }}</a>
+        {% else %}
+        <a class="page-btn" href="{{ url_for('history', page=p, label=label, mode=mode) }}">{{ p }}</a>
+        {% endif %}
+      {% else %}
+      <span class="page-btn disabled">&#8230;</span>
+      {% endif %}
+    {% endfor %}
+
+    {% if pagination.has_next %}
+    <a class="page-btn" href="{{ url_for('history', page=pagination.next_num, label=label, mode=mode) }}">Next &#8594;</a>
+    {% else %}
+    <span class="page-btn disabled">Next &#8594;</span>
+    {% endif %}
+  </div>
+
+  {% else %}
+  <div class="table-card">
+    <div class="empty-state">
+      <div class="empty-icon">&#128269;</div>
+      <strong>No results found</strong>
+      <p>No analyses match your current filters.</p>
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
