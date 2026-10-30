@@ -1,10 +1,33 @@
-# SentiScope 🔍
+# SentiScope 🔍 — Amazon Alexa Sentiment Analysis
 
-A full-stack NLP web application for multi-model sentiment analysis, built as a final year project using Flask, SQLAlchemy, VADER, TextBlob, and a custom trained ML model.
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-GitHub%20Pages-6366f1?style=for-the-badge&logo=github)](https://ajanya-k-a.github.io/Sentiment-Analysis-on-Amazon-Alexa-Reviews/)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.x-000000?style=for-the-badge&logo=flask&logoColor=white)](https://flask.palletsprojects.com/)
+[![NLP](https://img.shields.io/badge/NLP-VADER%20%7C%20TextBlob-10b981?style=for-the-badge)](https://github.com/cjhutto/vaderSentiment)
+
+A full-stack & client-side NLP web application for multi-model sentiment analysis on Amazon Alexa reviews, built using Flask, SQLAlchemy, VADER, TextBlob, and a custom trained ML classifier.
+
+> 🌐 **Live Web Application (Zero-Setup):**
+> **[https://ajanya-k-a.github.io/Sentiment-Analysis-on-Amazon-Alexa-Reviews/](https://ajanya-k-a.github.io/Sentiment-Analysis-on-Amazon-Alexa-Reviews/)**
+
+---
+
+## 🚀 Instant Publishing & Live Demo
+
+You can run and explore SentiScope instantly in your browser:
+- **Direct GitHub Pages Link:** [https://ajanya-k-a.github.io/Sentiment-Analysis-on-Amazon-Alexa-Reviews/](https://ajanya-k-a.github.io/Sentiment-Analysis-on-Amazon-Alexa-Reviews/)
+- **How to enable GitHub Pages on your repository:**
+  1. Open your repository on GitHub: https://github.com/AJANYA-K-A/Sentiment-Analysis-on-Amazon-Alexa-Reviews
+  2. Click **Settings** → **Pages** (under Code and automation in the left sidebar)
+  3. Under **Build and deployment** → **Source**, select **Deploy from a branch**
+  4. Under **Branch**, select main and folder / (root), then click **Save**
+  5. Your live site will be published at https://ajanya-k-a.github.io/Sentiment-Analysis-on-Amazon-Alexa-Reviews/ within 1–2 minutes!
 
 ---
 
 ## 📋 Table of Contents
+
+- [Live Demo & Publishing Link](#-instant-publishing--live-demo)
 
 - [Overview](#overview)
 - [Features](#features)
@@ -92,22 +115,26 @@ The application features user authentication, dual-text comparison, batch analys
 ## Project Structure
 
 ```
-sentiscope/
-├── app.py                    # Main Flask application
-├── sentiment_model.pkl       # Trained ML classifier (you must provide)
-├── tfidf_vectorizer.pkl      # Fitted TF-IDF vectorizer (you must provide)
+Sentiment-Analysis-on-Amazon-Alexa-Reviews/
+├── index.html                # Standalone Client-Side App & GitHub Pages Entry
+├── app.py                    # Main Full-Stack Flask Application
+├── sentiment_model.pkl       # Trained ML classifier
+├── tfidf_vectorizer.pkl      # Fitted TF-IDF vectorizer
+├── amazon_alexa.tsv          # Amazon Alexa Dataset (3,150 customer reviews)
 ├── requirements.txt          # Python dependencies
-├── sentiscope.db             # SQLite database (auto-created)
-├── templates/
-│   ├── base.html             # Base layout with navbar
-│   ├── login.html            # Login page
-│   ├── signup.html           # Sign up page
-│   ├── index.html            # Main analyser (dual comparison)
+├── static/                   # Static media and brand assets
+│   ├── logo.svg              # SentiScope Vector Logo
+│   └── image_da3f79.png      # Project app icon
+├── templates/                # Server-rendered Jinja2 templates (Flask)
+│   ├── base.html             # Base layout with navigation and dark/light mode
+│   ├── index.html            # Dual comparison analyser
 │   ├── batch.html            # Batch analysis page
 │   ├── dashboard.html        # Analytics dashboard
 │   ├── history.html          # Paginated history + filters
+│   ├── login.html            # User authentication
+│   ├── signup.html           # Registration
 │   └── profile.html          # User profile management
-└── README.md
+└── README.md                 # Documentation and deployment guide
 ```
 
 ---
@@ -123,8 +150,8 @@ sentiscope/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yourusername/sentiscope.git
-cd sentiscope
+git clone https://github.com/AJANYA-K-A/Sentiment-Analysis-on-Amazon-Alexa-Reviews.git
+cd Sentiment-Analysis-on-Amazon-Alexa-Reviews
 
 # 2. Create a virtual environment
 python -m venv venv
@@ -392,5 +419,6 @@ This project was developed as a Final Year Project (FYP) in Computer Science / A
 ---
 
 _Built with ❤️ using Flask & Python_
-#   S e n t i m e n t - A n a l y s i s - o n - A m a z o n - A l e x a - R e v i e w s  
+#   S e n t i m e n t - A n a l y s i s - o n - A m a z o n - A l e x a - R e v i e w s 
+ 
  
