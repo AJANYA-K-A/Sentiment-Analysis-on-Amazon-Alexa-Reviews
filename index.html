@@ -1534,15 +1534,7 @@
 
       <div class="input-card" style="margin-bottom: 24px;">
         <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text2);">Batch Texts (One per line)</label>
-        <div style="font-size: 0.78rem; color: var(--text3); margin-top: -6px;">Supports up to 50 review entries simultaneously.</div>
-        <textarea id="batchInputText" style="min-height: 200px; font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem;" placeholder="Enter one text per line…">Love my Echo! Sound is great and controls lights easily.
-The speaker sounds tinny and Alexa often misunderstands questions.
-Standard Bluetooth speaker, nothing too exciting.
-Excellent build quality, crisp audio, fast responses.
-Refused to connect to my 5GHz Wi-Fi network. Completely useless.
-Works nicely for playing morning news briefings and weather forecasts.
-Terrible battery life and constant disconnecting issues.
-Very satisfied with this purchase, works exactly as advertised.</textarea>
+        <textarea id="batchInputText" style="min-height: 200px; font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem;" placeholder="Enter one text per line (up to 50)…" autocomplete="off"></textarea>
         
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
           <div style="display: flex; gap: 10px;">
@@ -1734,7 +1726,7 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
             <div class="card-title">📝 Profile Bio</div>
             <div class="field">
               <label>Your Bio</label>
-              <textarea id="profileBioInput" rows="3" placeholder="Tell us about yourself or your research interests…">NLP researcher working on Amazon Alexa sentiment classification models.</textarea>
+              <textarea id="profileBioInput" rows="3" placeholder="Tell us about yourself or your research interests…"></textarea>
               <div class="hint">Max 300 characters.</div>
             </div>
             <button class="btn-solid" onclick="saveBio()">Update Bio</button>
@@ -2770,8 +2762,10 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
       // 1. Ensure textboxes start completely empty
       const t1 = document.getElementById("user_text1");
       const t2 = document.getElementById("user_text2");
+      const tb = document.getElementById("batchInputText");
       if (t1) t1.value = "";
       if (t2) t2.value = "";
+      if (tb) tb.value = "";
       updateLen("user_text1", "t1Count");
       updateLen("user_text2", "t2Count");
 
