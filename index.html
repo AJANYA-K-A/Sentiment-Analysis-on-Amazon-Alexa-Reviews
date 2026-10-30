@@ -1073,6 +1073,315 @@
       background: var(--surface2);
     }
 
+
+    /* ── Auth Layouts (Exact match to templates/login.html & templates/signup.html) ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes float-slow {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-15px) scale(1.05); }
+    }
+
+    .auth-page {
+      min-height: calc(100vh - var(--nav-h));
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      background: radial-gradient(circle at top left, #1d1a4bd0, #1a294c);
+      padding: 24px;
+      gap: 24px;
+      box-sizing: border-box;
+      animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .auth-panel {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 80px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px) saturate(120%);
+      -webkit-backdrop-filter: blur(16px) saturate(120%);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 36px;
+      text-decoration: none;
+      width: fit-content;
+      transition: transform 0.2s ease;
+    }
+    .auth-logo:hover {
+      transform: scale(1.02);
+    }
+    .auth-logo-icon {
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, var(--accent, #2563eb), #6366f1);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.25rem;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      padding: 4px;
+    }
+    .auth-logo-icon img, .auth-logo-icon svg {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .auth-logo-text {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .auth-heading {
+      font-size: 2.2rem;
+      font-weight: 800;
+      letter-spacing: -0.75px;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .auth-sub {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 28px;
+    }
+
+    .auth-form .field {
+      margin-bottom: 18px;
+    }
+    .auth-form label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.75px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 8px;
+    }
+    .auth-form input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      background: rgba(0, 0, 0, 0.2);
+      color: #ffffff;
+      outline: none;
+      box-sizing: border-box;
+      transition: all 0.25s ease;
+    }
+    .auth-form input:focus {
+      border-color: rgba(99, 102, 241, 0.6);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+      background: rgba(0, 0, 0, 0.3);
+    }
+    .auth-form .hint {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 6px;
+      font-weight: 500;
+    }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .btn-auth {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent, #2563eb), #6366f1);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+    .btn-auth:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+      filter: brightness(1.1);
+    }
+
+    .auth-divider {
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.3);
+      margin: 28px 0;
+      position: relative;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: calc(50% - 30px);
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .auth-divider::before { left: 0; }
+    .auth-divider::after { right: 0; }
+
+    .auth-foot {
+      text-align: center;
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 14px;
+    }
+    .auth-foot a {
+      color: #818cf8;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .auth-foot a:hover {
+      text-decoration: underline;
+    }
+
+    .auth-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 60px 60px;
+      background: rgba(255, 255, 255, 0.02);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .auth-info::before {
+      content: "";
+      position: absolute;
+      top: -20%;
+      right: -20%;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+      animation: float-slow 10s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .auth-info-headline {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+      line-height: 1.25;
+    }
+    .auth-info-sub {
+      font-size: 1.05rem;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 0;
+      margin: 0;
+    }
+    .feature-list li {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.8);
+      padding: 14px 20px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .feature-list li:hover {
+      background: rgba(255, 255, 255, 0.07);
+      transform: translateX(8px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    }
+    .feat-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+
+    .perk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .perk-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      padding: 20px;
+      transition: all 0.25s ease;
+    }
+    .perk-card:hover {
+      background: rgba(255, 255, 255, 0.07);
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+    .perk-icon {
+      font-size: 1.5rem;
+      margin-bottom: 12px;
+    }
+    .perk-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+    .perk-desc {
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.5);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1024px) {
+      .auth-page { grid-template-columns: 1fr; padding: 16px; }
+      .auth-info { display: none; }
+      .auth-panel { padding: 50px 32px; }
+    }
+    @media (max-width: 480px) {
+      .auth-panel { padding: 36px 20px; }
+      .auth-heading { font-size: 1.75rem; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+    }
+
   </style>
 </head>
 <body>
@@ -1097,21 +1406,27 @@
 
     <div class="nav-sep"></div>
 
-    <div class="nav-links">
+    <div class="nav-sep" id="navSep" style="display: none;"></div>
+    <div class="nav-links" id="navLinks" style="display: none;">
       <button class="nav-link active" id="btn-nav-analyser" onclick="switchNavTab('analyser')">Analyser</button>
       <button class="nav-link" id="btn-nav-batch" onclick="switchNavTab('batch')">Batch</button>
       <button class="nav-link" id="btn-nav-dashboard" onclick="switchNavTab('dashboard')">Dashboard</button>
       <button class="nav-link" id="btn-nav-history" onclick="switchNavTab('history')">History</button>
       <button class="nav-link" id="btn-nav-profile" onclick="switchNavTab('profile')">Profile</button>
-      <button class="nav-link" id="btn-nav-api" onclick="switchNavTab('api')">API</button>
     </div>
 
     <div class="nav-right">
       <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-      <span class="meta-pill" style="margin: 0; padding: 6px 12px; font-weight: 600;" id="userChip">
-        👤 <span id="navUsername">ajanya</span>
-      </span>
-      <button class="btn-ghost" onclick="openAuthModal('login')">Switch User</button>
+      <div id="authNavLoggedOut" style="display: flex; gap: 8px;">
+        <button class="btn-ghost" id="btn-nav-login" onclick="switchNavTab('login')">Log in</button>
+        <button class="btn-solid" id="btn-nav-signup" onclick="switchNavTab('signup')">Sign up</button>
+      </div>
+      <div id="authNavLoggedIn" style="display: none; align-items: center; gap: 8px;">
+        <span class="meta-pill" style="margin: 0; padding: 6px 12px; font-weight: 600;" id="userChip">
+          👤 <span id="navUsername">ajanya</span>
+        </span>
+        <button class="btn-ghost" onclick="handleLogout()">Sign out</button>
+      </div>
     </div>
   </nav>
 
@@ -1152,7 +1467,7 @@
               </div>
               <span class="mono" style="font-size: 0.75rem; color: var(--text3);" id="t1Count">0 chars</span>
             </div>
-            <textarea id="user_text1" name="user_text1" placeholder="Type or paste your first text here…" oninput="updateLen('user_text1', 't1Count')">Love my Echo! Sound quality is fantastic and it sets up in minutes. Best smart home purchase ever.</textarea>
+            <textarea id="user_text1" name="user_text1" placeholder="Type or paste your first text here…" oninput="updateLen('user_text1', 't1Count')"></textarea>
             
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <button type="button" class="btn-mic" id="mic1" onclick="recordSpeech('user_text1', 'mic1')">🎤 Speak</button>
@@ -1176,7 +1491,7 @@
               </div>
               <span class="mono" style="font-size: 0.75rem; color: var(--text3);" id="t2Count">0 chars</span>
             </div>
-            <textarea id="user_text2" name="user_text2" placeholder="Type or paste your second text here…" oninput="updateLen('user_text2', 't2Count')">Stopped working after 2 days. Terrible customer service and complete waste of money.</textarea>
+            <textarea id="user_text2" name="user_text2" placeholder="Type or paste your second text here…" oninput="updateLen('user_text2', 't2Count')"></textarea>
             
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <button type="button" class="btn-mic" id="mic2" onclick="recordSpeech('user_text2', 'mic2')">🎤 Speak</button>
@@ -1480,42 +1795,145 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
       </div>
     </div>
 
-  </main>
 
-  <!-- ── Authentication Modal (Login / Signup Simulation) ─────────────── -->
-  <div class="modal-overlay" id="authModal" onclick="closeAuthOnBg(event)">
-    <div class="modal-box">
-      <h2 id="modalTitle" style="font-size: 1.25rem; font-weight: 800; margin-bottom: 8px;">Log In</h2>
-      <p id="modalDesc" style="font-size: 0.88rem; color: var(--text2); margin-bottom: 20px;">Sign in to access your saved analyses and custom profile.</p>
+    <!-- ═════════════════════════════════════════════════════════════════
+         LOGIN VIEW (Exact match to templates/login.html)
+         ═════════════════════════════════════════════════════════════════ -->
+    <div id="view-login" class="tab-content" style="padding: 0; margin: -36px -24px -80px;">
+      <div class="auth-page">
+        <div class="auth-panel">
+          <a class="auth-logo" href="#analyser" onclick="switchNavTab('analyser')">
+            <div class="auth-logo-icon">
+              <svg viewBox="0 0 100 100" fill="none">
+                <rect width="100" height="100" rx="22" fill="#6366f1"/>
+                <path d="M 28 50 Q 38 32 50 50 T 72 50" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="58" cy="42" r="14" stroke="#fff" stroke-width="5"/>
+                <line x1="68" y1="52" x2="77" y2="61" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="auth-logo-text">Sentiment Analyser</div>
+          </a>
 
-      <div id="modalSignupFields" style="display: none;">
-        <div class="field">
-          <label>Email Address</label>
-          <input type="email" id="authEmail" placeholder="you@example.com" />
+          <h1 class="auth-heading">Welcome back</h1>
+          <p class="auth-sub">Sign in to your account to continue</p>
+
+          <form onsubmit="handleLoginSubmit(event)" class="auth-form">
+            <div class="field">
+              <label for="login_username">Username</label>
+              <input id="login_username" type="text" placeholder="Enter your username" autocomplete="username" required value="ajanya" />
+            </div>
+            <div class="field">
+              <label for="login_password">Password</label>
+              <input id="login_password" type="password" placeholder="Enter your password" autocomplete="current-password" required value="password123" />
+            </div>
+            <button type="submit" class="btn-auth">Sign In →</button>
+          </form>
+
+          <div class="auth-divider">or</div>
+
+          <div class="auth-foot">
+            Don't have an account?
+            <a href="#signup" onclick="switchNavTab('signup')">Create one free</a>
+          </div>
+        </div>
+
+        <div class="auth-info">
+          <div class="auth-info-headline">AI-powered sentiment analysis</div>
+          <p class="auth-info-sub">Understand the emotional tone of any text instantly with our multi-model NLP engine dashboard.</p>
+          <ul class="feature-list">
+            <li><span class="feat-icon">🔬</span> VADER, TextBlob &amp; ML ensemble models</li>
+            <li><span class="feat-icon">⚡</span> Side-by-side text comparison</li>
+            <li><span class="feat-icon">📦</span> Batch analysis up to 50 texts at once</li>
+            <li><span class="feat-icon">📈</span> Dashboard with trends &amp; statistics</li>
+            <li><span class="feat-icon">🎤</span> Voice input support</li>
+            <li><span class="feat-icon">⬇️</span> Export results as CSV</li>
+          </ul>
         </div>
       </div>
+    </div>
 
-      <div class="field">
-        <label>Username</label>
-        <input type="text" id="authUsername" placeholder="e.g. ajanya" value="ajanya" />
-      </div>
+    <!-- ═════════════════════════════════════════════════════════════════
+         SIGNUP VIEW (Exact match to templates/signup.html)
+         ═════════════════════════════════════════════════════════════════ -->
+    <div id="view-signup" class="tab-content" style="padding: 0; margin: -36px -24px -80px;">
+      <div class="auth-page">
+        <div class="auth-panel">
+          <a class="auth-logo" href="#analyser" onclick="switchNavTab('analyser')">
+            <div class="auth-logo-icon">
+              <svg viewBox="0 0 100 100" fill="none">
+                <rect width="100" height="100" rx="22" fill="#6366f1"/>
+                <path d="M 28 50 Q 38 32 50 50 T 72 50" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+                <circle cx="58" cy="42" r="14" stroke="#fff" stroke-width="5"/>
+                <line x1="68" y1="52" x2="77" y2="61" stroke="#fff" stroke-width="6" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div class="auth-logo-text">Sentiment Analyser</div>
+          </a>
 
-      <div class="field">
-        <label>Password</label>
-        <input type="password" id="authPassword" placeholder="••••••••" value="password123" />
-      </div>
+          <h1 class="auth-heading">Create an account</h1>
+          <p class="auth-sub">Free forever. No credit card required.</p>
 
-      <div id="modalConfirmWrap" class="field" style="display: none;">
-        <label>Confirm Password</label>
-        <input type="password" id="authConfirm" placeholder="••••••••" value="password123" />
-      </div>
+          <form onsubmit="handleSignupSubmit(event)" class="auth-form">
+            <div class="field">
+              <label for="signup_user">Username</label>
+              <input id="signup_user" type="text" placeholder="Choose a username" autocomplete="username" required />
+            </div>
+            <div class="field">
+              <label for="signup_email">Email</label>
+              <input id="signup_email" type="email" placeholder="you@example.com" autocomplete="email" required />
+            </div>
 
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 24px;">
-        <button type="button" class="btn-solid" id="authSubmitBtn" onclick="submitAuth()">Log In</button>
-        <button type="button" class="btn-ghost" onclick="toggleAuthMode()" id="authSwitchMode">Create Account</button>
+            <div class="field-row">
+              <div class="field">
+                <label for="signup_pw">Password</label>
+                <input id="signup_pw" type="password" placeholder="••••••••" autocomplete="new-password" required />
+                <p class="hint">Min. 6 characters</p>
+              </div>
+              <div class="field">
+                <label for="signup_confirm">Confirm</label>
+                <input id="signup_confirm" type="password" placeholder="••••••••" autocomplete="new-password" required />
+              </div>
+            </div>
+
+            <button type="submit" class="btn-auth">Create Account →</button>
+          </form>
+
+          <div class="auth-foot">
+            Already have an account? <a href="#login" onclick="switchNavTab('login')">Log in</a>
+          </div>
+        </div>
+
+        <div class="auth-info">
+          <div class="auth-info-headline">Everything you need</div>
+          <p class="auth-info-sub">A complete sentiment analysis toolkit powered by multiple advanced NLP models.</p>
+
+          <div class="perk-grid">
+            <div class="perk-card">
+              <div class="perk-icon">🔬</div>
+              <div class="perk-name">Multi-Model</div>
+              <div class="perk-desc">VADER, TextBlob &amp; custom ML models.</div>
+            </div>
+            <div class="perk-card">
+              <div class="perk-icon">⚡</div>
+              <div class="perk-name">Compare</div>
+              <div class="perk-desc">Side-by-side metric comparison engines.</div>
+            </div>
+            <div class="perk-card">
+              <div class="perk-icon">📦</div>
+              <div class="perk-name">Batch Mode</div>
+              <div class="perk-desc">Analyse up to 50 entries instantly.</div>
+            </div>
+            <div class="perk-card">
+              <div class="perk-icon">📈</div>
+              <div class="perk-name">Dashboard</div>
+              <div class="perk-desc">Beautiful charts, statistics &amp; history track.</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
+
+  </main>
 
   <!-- ── Footer ───────────────────────────────────────────────────────── -->
   <footer>
@@ -2229,42 +2647,83 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
       if (tabName === "history") renderHistoryTable();
     }
 
-    /* ── Authentication Modal & State ─────────────────────────────────── */
-    let isSignupMode = false;
-
-    function openAuthModal(mode) {
-      isSignupMode = (mode === "signup");
-      document.getElementById("authModal").classList.add("active");
-      document.getElementById("modalTitle").textContent = isSignupMode ? "Sign Up" : "Log In";
-      document.getElementById("modalDesc").textContent = isSignupMode
-        ? "Create an account to start analyzing Amazon Alexa reviews."
-        : "Sign in to access your saved analyses and custom profile.";
-      document.getElementById("modalSignupFields").style.display = isSignupMode ? "block" : "none";
-      document.getElementById("modalConfirmWrap").style.display = isSignupMode ? "block" : "none";
-      document.getElementById("authSubmitBtn").textContent = isSignupMode ? "Sign Up" : "Log In";
-      document.getElementById("authSwitchMode").textContent = isSignupMode ? "Already have account? Log In" : "Create Account";
+    /* ── Authentication State & Views (Matching app.py login/signup/logout) ── */
+    function isLoggedIn() {
+      return !!localStorage.getItem("sentiscope_user");
     }
 
-    function toggleAuthMode() {
-      openAuthModal(isSignupMode ? "login" : "signup");
-    }
+    function updateNavAuthState() {
+      const logged = isLoggedIn();
+      const user = localStorage.getItem("sentiscope_user") || "ajanya";
+      const navLinks = document.getElementById("navLinks");
+      const navSep = document.getElementById("navSep");
+      const loggedInNav = document.getElementById("authNavLoggedIn");
+      const loggedOutNav = document.getElementById("authNavLoggedOut");
 
-    function closeAuthOnBg(e) {
-      if (e.target.id === "authModal") {
-        document.getElementById("authModal").classList.remove("active");
+      if (logged) {
+        if (navLinks) navLinks.style.display = "flex";
+        if (navSep) navSep.style.display = "block";
+        if (loggedInNav) loggedInNav.style.display = "flex";
+        if (loggedOutNav) loggedOutNav.style.display = "none";
+        document.getElementById("navUsername").textContent = user;
+        document.getElementById("metaUser").textContent = user;
+        document.getElementById("profileNameDisplay").textContent = user;
+        document.getElementById("profileAvatarLetter").textContent = user.charAt(0).toUpperCase();
+      } else {
+        if (navLinks) navLinks.style.display = "none";
+        if (navSep) navSep.style.display = "none";
+        if (loggedInNav) loggedInNav.style.display = "none";
+        if (loggedOutNav) loggedOutNav.style.display = "flex";
       }
     }
 
-    function submitAuth() {
-      const user = document.getElementById("authUsername").value.trim() || "ajanya";
-      localStorage.setItem("sentiscope_username", user);
-      document.getElementById("navUsername").textContent = user;
-      document.getElementById("metaUser").textContent = user;
-      document.getElementById("profileNameDisplay").textContent = user;
-      document.getElementById("profileAvatarLetter").textContent = user.charAt(0).toUpperCase();
-      document.getElementById("authModal").classList.remove("active");
+    function handleLoginSubmit(e) {
+      if (e) e.preventDefault();
+      const u = document.getElementById("login_username").value.trim();
+      const p = document.getElementById("login_password").value;
+      if (!u || !p) {
+        showFlash("Invalid username or password.", "error");
+        return;
+      }
+      localStorage.setItem("sentiscope_user", u);
+      updateNavAuthState();
+      showFlash(`Welcome back, ${u}!`, "success");
+      switchNavTab("analyser");
+    }
 
-      showFlash(isSignupMode ? `Account created! Welcome, ${user}.` : `Welcome back, ${user}!`, "success");
+    function handleSignupSubmit(e) {
+      if (e) e.preventDefault();
+      const u = document.getElementById("signup_user").value.trim();
+      const email = document.getElementById("signup_email").value.trim();
+      const p = document.getElementById("signup_pw").value;
+      const c = document.getElementById("signup_confirm").value;
+
+      if (!u || !email || !p) {
+        showFlash("All fields are required.", "error");
+        return;
+      }
+      if (p !== c) {
+        showFlash("Passwords do not match.", "error");
+        return;
+      }
+      if (p.length < 6) {
+        showFlash("Password must be at least 6 characters.", "error");
+        return;
+      }
+
+      localStorage.setItem("sentiscope_user", u);
+      localStorage.setItem("sentiscope_email", email);
+      document.getElementById("profileEmailDisplay").textContent = email;
+      updateNavAuthState();
+      showFlash(`Account created! Welcome, ${u}.`, "success");
+      switchNavTab("analyser");
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("sentiscope_user");
+      updateNavAuthState();
+      showFlash("You\'ve been logged out.", "info");
+      switchNavTab("login");
     }
 
     /* ── Theme Switcher ───────────────────────────────────────────────── */
@@ -2311,11 +2770,18 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
       const savedBio = localStorage.getItem("sentiscope_user_bio");
       if (savedBio) document.getElementById("profileBioInput").value = savedBio;
 
+      // Ensure textboxes start empty by default
+      document.getElementById("user_text1").value = "";
+      document.getElementById("user_text2").value = "";
       updateLen("user_text1", "t1Count");
       updateLen("user_text2", "t2Count");
 
-      // Initial run
-      handleAnalyseSubmit();
+      // Default user session if not set
+      if (!localStorage.getItem("sentiscope_user")) {
+        localStorage.setItem("sentiscope_user", "ajanya");
+      }
+
+      updateNavAuthState();
       updateDashboardData();
     });
   </script>
