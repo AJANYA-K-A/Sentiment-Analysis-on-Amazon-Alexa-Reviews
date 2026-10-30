@@ -1439,7 +1439,7 @@
     <!-- ═════════════════════════════════════════════════════════════════
          1. ANALYSER VIEW (Dual Comparison, matching templates/index.html)
          ═════════════════════════════════════════════════════════════════ -->
-    <div id="view-analyser" class="tab-content active">
+    <div id="view-analyser" class="tab-content">
       <div class="page-header">
         <div class="page-tag">Analyser</div>
         <h1>Compare Sentiments</h1>
@@ -1467,7 +1467,7 @@
               </div>
               <span class="mono" style="font-size: 0.75rem; color: var(--text3);" id="t1Count">0 chars</span>
             </div>
-            <textarea id="user_text1" name="user_text1" placeholder="Type or paste your first text here…" oninput="updateLen('user_text1', 't1Count')"></textarea>
+            <textarea id="user_text1" name="user_text1" autocomplete="off" placeholder="Type or paste your first text here…" oninput="updateLen('user_text1', 't1Count')"></textarea>
             
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <button type="button" class="btn-mic" id="mic1" onclick="recordSpeech('user_text1', 'mic1')">🎤 Speak</button>
@@ -1491,7 +1491,7 @@
               </div>
               <span class="mono" style="font-size: 0.75rem; color: var(--text3);" id="t2Count">0 chars</span>
             </div>
-            <textarea id="user_text2" name="user_text2" placeholder="Type or paste your second text here…" oninput="updateLen('user_text2', 't2Count')"></textarea>
+            <textarea id="user_text2" name="user_text2" autocomplete="off" placeholder="Type or paste your second text here…" oninput="updateLen('user_text2', 't2Count')"></textarea>
             
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <button type="button" class="btn-mic" id="mic2" onclick="recordSpeech('user_text2', 'mic2')">🎤 Speak</button>
@@ -1799,7 +1799,7 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
     <!-- ═════════════════════════════════════════════════════════════════
          LOGIN VIEW (Exact match to templates/login.html)
          ═════════════════════════════════════════════════════════════════ -->
-    <div id="view-login" class="tab-content" style="padding: 0; margin: -36px -24px -80px;">
+    <div id="view-login" class="tab-content active" style="padding: 0; margin: -36px -24px -80px;">
       <div class="auth-page">
         <div class="auth-panel">
           <a class="auth-logo" href="#analyser" onclick="switchNavTab('analyser')">
@@ -2634,8 +2634,18 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
 
     /* ── Navigation Tab Switching ─────────────────────────────────────── */
     function switchNavTab(tabName) {
+      const protectedTabs = ["analyser", "batch", "dashboard", "history", "profile"];
+      if (protectedTabs.includes(tabName) && !isLoggedIn()) {
+        tabName = "login";
+        showFlash("Please log in to access the analyser.", "warning");
+      }
+
       document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
       document.querySelectorAll(".nav-link").forEach(el => el.classList.remove("active"));
+      const loginNavBtn = document.getElementById("btn-nav-login");
+      const signupNavBtn = document.getElementById("btn-nav-signup");
+      if (loginNavBtn) loginNavBtn.classList.toggle("active", tabName === "login");
+      if (signupNavBtn) signupNavBtn.classList.toggle("active", tabName === "signup");
 
       const targetView = document.getElementById(`view-${tabName}`);
       const targetBtn = document.getElementById(`btn-nav-${tabName}`);
@@ -2649,12 +2659,12 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
 
     /* ── Authentication State & Views (Matching app.py login/signup/logout) ── */
     function isLoggedIn() {
-      return !!localStorage.getItem("sentiscope_user");
+      return sessionStorage.getItem("sentiscope_logged_in") === "true";
     }
 
     function updateNavAuthState() {
       const logged = isLoggedIn();
-      const user = localStorage.getItem("sentiscope_user") || "ajanya";
+      const user = sessionStorage.getItem("sentiscope_username") || "ajanya";
       const navLinks = document.getElementById("navLinks");
       const navSep = document.getElementById("navSep");
       const loggedInNav = document.getElementById("authNavLoggedIn");
@@ -2667,8 +2677,10 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
         if (loggedOutNav) loggedOutNav.style.display = "none";
         document.getElementById("navUsername").textContent = user;
         document.getElementById("metaUser").textContent = user;
-        document.getElementById("profileNameDisplay").textContent = user;
-        document.getElementById("profileAvatarLetter").textContent = user.charAt(0).toUpperCase();
+        const profName = document.getElementById("profileNameDisplay");
+        if (profName) profName.textContent = user;
+        const profAvatar = document.getElementById("profileAvatarLetter");
+        if (profAvatar) profAvatar.textContent = user.charAt(0).toUpperCase();
       } else {
         if (navLinks) navLinks.style.display = "none";
         if (navSep) navSep.style.display = "none";
@@ -2679,13 +2691,10 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
 
     function handleLoginSubmit(e) {
       if (e) e.preventDefault();
-      const u = document.getElementById("login_username").value.trim();
-      const p = document.getElementById("login_password").value;
-      if (!u || !p) {
-        showFlash("Invalid username or password.", "error");
-        return;
-      }
-      localStorage.setItem("sentiscope_user", u);
+      const u = document.getElementById("login_username").value.trim() || "ajanya";
+      sessionStorage.setItem("sentiscope_logged_in", "true");
+      sessionStorage.setItem("sentiscope_username", u);
+      localStorage.setItem("sentiscope_username", u);
       updateNavAuthState();
       showFlash(`Welcome back, ${u}!`, "success");
       switchNavTab("analyser");
@@ -2711,16 +2720,19 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
         return;
       }
 
-      localStorage.setItem("sentiscope_user", u);
+      sessionStorage.setItem("sentiscope_logged_in", "true");
+      sessionStorage.setItem("sentiscope_username", u);
+      localStorage.setItem("sentiscope_username", u);
       localStorage.setItem("sentiscope_email", email);
-      document.getElementById("profileEmailDisplay").textContent = email;
+      const emailDisp = document.getElementById("profileEmailDisplay");
+      if (emailDisp) emailDisp.textContent = email;
       updateNavAuthState();
       showFlash(`Account created! Welcome, ${u}.`, "success");
       switchNavTab("analyser");
     }
 
     function handleLogout() {
-      localStorage.removeItem("sentiscope_user");
+      sessionStorage.removeItem("sentiscope_logged_in");
       updateNavAuthState();
       showFlash("You\'ve been logged out.", "info");
       switchNavTab("login");
@@ -2755,33 +2767,42 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
 
     /* ── App Initialization ───────────────────────────────────────────── */
     window.addEventListener("DOMContentLoaded", () => {
-      // Restore theme icon
+      // 1. Ensure textboxes start completely empty
+      const t1 = document.getElementById("user_text1");
+      const t2 = document.getElementById("user_text2");
+      if (t1) t1.value = "";
+      if (t2) t2.value = "";
+      updateLen("user_text1", "t1Count");
+      updateLen("user_text2", "t2Count");
+
+      // 2. Clear any old result panels & verdict
+      const r1 = document.getElementById("result1Container");
+      const r2 = document.getElementById("result2Container");
+      if (r1) r1.innerHTML = "";
+      if (r2) r2.innerHTML = "";
+      const vb = document.getElementById("verdictBlock");
+      if (vb) vb.style.display = "none";
+
+      // 3. Restore theme icon
       if (document.documentElement.classList.contains("dark")) {
         document.getElementById("themeBtn").textContent = "☀️";
       }
 
-      // Restore user & bio
-      const savedUser = localStorage.getItem("sentiscope_username") || "ajanya";
-      document.getElementById("navUsername").textContent = savedUser;
-      document.getElementById("metaUser").textContent = savedUser;
-      document.getElementById("profileNameDisplay").textContent = savedUser;
-      document.getElementById("profileAvatarLetter").textContent = savedUser.charAt(0).toUpperCase();
-
+      // 4. Restore user bio if any
       const savedBio = localStorage.getItem("sentiscope_user_bio");
-      if (savedBio) document.getElementById("profileBioInput").value = savedBio;
-
-      // Ensure textboxes start empty by default
-      document.getElementById("user_text1").value = "";
-      document.getElementById("user_text2").value = "";
-      updateLen("user_text1", "t1Count");
-      updateLen("user_text2", "t2Count");
-
-      // Default user session if not set
-      if (!localStorage.getItem("sentiscope_user")) {
-        localStorage.setItem("sentiscope_user", "ajanya");
+      if (savedBio && document.getElementById("profileBioInput")) {
+        document.getElementById("profileBioInput").value = savedBio;
       }
 
-      updateNavAuthState();
+      // 5. Default view when pressing the link: LOGIN PAGE VISIBLE
+      if (isLoggedIn()) {
+        updateNavAuthState();
+        switchNavTab("analyser");
+      } else {
+        updateNavAuthState();
+        switchNavTab("login");
+      }
+
       updateDashboardData();
     });
   </script>
