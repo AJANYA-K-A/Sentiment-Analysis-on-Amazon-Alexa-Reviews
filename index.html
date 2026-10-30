@@ -1005,6 +1005,74 @@
     footer a:hover {
       text-decoration: underline;
     }
+
+    /* ── Dashboard Styles (Exact match to templates/dashboard.html & base.html) ── */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .section-header h2 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .section-header a {
+      font-size: 0.82rem;
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .section-header a:hover {
+      text-decoration: underline;
+    }
+
+    .t-text {
+      max-width: 260px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text2);
+    }
+    .t-time {
+      font-size: 0.75rem;
+      color: var(--text3);
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      padding: 72px 24px;
+      text-align: center;
+    }
+    .empty-state .empty-icon {
+      font-size: 2.8rem;
+      margin-bottom: 16px;
+    }
+    .empty-state strong {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .empty-state p {
+      font-size: 0.92rem;
+      color: var(--text2);
+      margin-top: 8px;
+    }
+
+    .mode-chip {
+      display: inline-block;
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      color: var(--text3);
+      font-weight: 500;
+      background: var(--surface2);
+    }
+
   </style>
 </head>
 <body>
@@ -1193,68 +1261,77 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
     </div>
 
     <!-- ═════════════════════════════════════════════════════════════════
-         3. DASHBOARD VIEW (matching templates/dashboard.html)
+         3. DASHBOARD VIEW (Exact structure from templates/dashboard.html)
          ═════════════════════════════════════════════════════════════════ -->
     <div id="view-dashboard" class="tab-content">
-      <div class="page-header">
-        <div class="page-tag">Analytics</div>
-        <h1>Sentiment Dashboard</h1>
-        <p>Overview of your analysed reviews, sentiment breakdowns, and confidence trends.</p>
-      </div>
+      <div class="page-wrap" style="max-width: 1060px; padding: 0;">
+        <div class="page-header">
+          <div class="page-tag">Analytics</div>
+          <h1>Your Dashboard</h1>
+          <p>Overview of all your sentiment analyses.</p>
+        </div>
 
-      <div class="stats-row">
-        <div class="stat-card">
-          <div class="s-label">Total Analyses</div>
-          <div class="s-val total" id="dashTotalCount">0</div>
-        </div>
-        <div class="stat-card">
-          <div class="s-label">Positive Sentiment</div>
-          <div class="s-val pos" id="dashPosPct">0%</div>
-        </div>
-        <div class="stat-card">
-          <div class="s-label">Negative Sentiment</div>
-          <div class="s-val neg" id="dashNegPct">0%</div>
-        </div>
-        <div class="stat-card">
-          <div class="s-label">Avg Confidence</div>
-          <div class="s-val conf" id="dashAvgConf">0%</div>
-        </div>
-      </div>
-
-      <div class="charts-row">
-        <div class="chart-card">
-          <h3>Sentiment Breakdown</h3>
-          <div class="chart-wrap">
-            <canvas id="dashDoughnut"></canvas>
+        <!-- Empty state (rendered when stats.total == 0) -->
+        <div id="dashEmptyState" class="table-card" style="display: none;">
+          <div class="empty-state">
+            <div class="empty-icon">📊</div>
+            <strong>No analyses yet</strong>
+            <p>Start analysing text to see your statistics and charts here.</p>
+            <a href="#analyser" class="btn btn-solid" style="margin-top: 20px;" onclick="switchNavTab('analyser')">Go to Analyser</a>
           </div>
         </div>
-        <div class="chart-card">
-          <h3>Sentiment Trends (Recent 30)</h3>
-          <div class="chart-wrap">
-            <canvas id="dashLine"></canvas>
+
+        <!-- Populated dashboard (rendered when stats.total > 0) -->
+        <div id="dashContentWrap">
+          <div class="stats-row">
+            <div class="stat-card">
+              <div class="s-label">Total Analyses</div>
+              <div class="s-val total" id="dashTotal">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="s-label">Positive</div>
+              <div class="s-val pos" id="dashPos">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="s-label">Negative</div>
+              <div class="s-val neg" id="dashNeg">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="s-label">Avg. Confidence</div>
+              <div class="s-val conf" id="dashConf">0%</div>
+            </div>
+          </div>
+
+          <div class="charts-row">
+            <div class="chart-card">
+              <h3>Sentiment Distribution</h3>
+              <div class="chart-wrap"><canvas id="pieChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <h3>Recent Trend (last 30)</h3>
+              <div class="chart-wrap"><canvas id="lineChart"></canvas></div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <h2>Recent Analyses</h2>
+            <a href="#history" onclick="switchNavTab('history')">View all →</a>
+          </div>
+          <div class="table-card">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Text</th>
+                  <th>Label</th>
+                  <th>Confidence</th>
+                  <th>Mode</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody id="dashRecentRows"></tbody>
+            </table>
           </div>
         </div>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-        <h2 style="font-size: 0.95rem; font-weight: 700; color: var(--text);">Recent Analyses</h2>
-        <a href="#history" style="font-size: 0.82rem; color: var(--accent); text-decoration: none; font-weight: 600;" onclick="switchNavTab('history')">View all in History &rarr;</a>
-      </div>
-
-      <div class="table-card">
-        <table class="data-table">
-          <thead>
-            <tr>
-              <th>Text</th>
-              <th>Sentiment</th>
-              <th>Confidence</th>
-              <th>VADER</th>
-              <th>Mode</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-          <tbody id="dashRecentRows"></tbody>
-        </table>
       </div>
     </div>
 
@@ -1865,8 +1942,8 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
       showFlash("Batch CSV exported successfully.", "success");
     }
 
-    /* ── Dashboard & Chart.js ─────────────────────────────────────────── */
-    let doughnutChartInstance = null;
+    /* ── Dashboard & Chart.js (Exact code & behavior from templates/dashboard.html) ─ */
+    let pieChartInstance = null;
     let lineChartInstance = null;
 
     function updateDashboardData() {
@@ -1875,31 +1952,43 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
       const pos = records.filter(r => r.label === "Positive").length;
       const neg = records.filter(r => r.label === "Negative").length;
       const neu = records.filter(r => r.label === "Neutral").length;
-      const avg = total ? (records.reduce((acc, r) => acc + r.confidence, 0) / total).toFixed(1) : 0;
+      const avg = total ? (records.reduce((acc, r) => acc + (parseFloat(r.confidence) || 0), 0) / total).toFixed(1) : 0;
 
-      document.getElementById("dashTotalCount").textContent = total;
-      document.getElementById("dashPosPct").textContent = total ? Math.round((pos / total) * 100) + "%" : "0%";
-      document.getElementById("dashNegPct").textContent = total ? Math.round((neg / total) * 100) + "%" : "0%";
-      document.getElementById("dashAvgConf").textContent = avg + "%";
-      document.getElementById("profileTotalCount").textContent = total;
+      const emptyWrap = document.getElementById("dashEmptyState");
+      const contentWrap = document.getElementById("dashContentWrap");
 
-      // Render Recent 10 Table
+      if (total === 0) {
+        if (emptyWrap) emptyWrap.style.display = "block";
+        if (contentWrap) contentWrap.style.display = "none";
+        const profCount = document.getElementById("profileTotalCount");
+        if (profCount) profCount.textContent = "0";
+        return;
+      }
+
+      if (emptyWrap) emptyWrap.style.display = "none";
+      if (contentWrap) contentWrap.style.display = "block";
+
+      document.getElementById("dashTotal").textContent = total;
+      document.getElementById("dashPos").textContent = pos;
+      document.getElementById("dashNeg").textContent = neg;
+      document.getElementById("dashConf").textContent = avg + "%";
+      const profCount = document.getElementById("profileTotalCount");
+      if (profCount) profCount.textContent = total;
+
+      // Render Recent Analyses Table (Exact markup from templates/dashboard.html)
       const recentTbody = document.getElementById("dashRecentRows");
       const recent = records.slice(0, 10);
-      if (recent.length === 0) {
-        recentTbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text3); padding:24px;">No analysis records found. Run the analyser to see metrics.</td></tr>`;
-      } else {
-        recentTbody.innerHTML = recent.map(r => `
-          <tr>
-            <td>${escapeHTML(r.text)}</td>
-            <td><span class="badge ${r.css}">${r.label}</span></td>
-            <td class="mono">${r.confidence}%</td>
-            <td class="mono">${r.vader_score}</td>
-            <td><span class="mono" style="font-size:0.75rem; text-transform:uppercase;">${r.mode}</span></td>
-            <td style="font-size:0.78rem; color:var(--text3);">${r.created_at}</td>
-          </tr>
-        `).join("");
-      }
+      recentTbody.innerHTML = recent.map(r => `
+        <tr>
+          <td class="t-text" title="${escapeHTML(r.text)}">${escapeHTML(r.text)}</td>
+          <td>
+            <span class="badge ${r.label.toLowerCase()}">${escapeHTML(r.label)}</span>
+          </td>
+          <td class="mono">${r.confidence}%</td>
+          <td><span class="mode-chip">${escapeHTML(r.mode)}</span></td>
+          <td class="t-time">${r.created_at}</td>
+        </tr>
+      `).join("");
 
       renderDashboardCharts(pos, neg, neu, records);
     }
@@ -1908,63 +1997,77 @@ Very satisfied with this purchase, works exactly as advertised.</textarea>
       if (typeof Chart === "undefined") return;
 
       const isDark = document.documentElement.classList.contains("dark");
-      const textColor = isDark ? "#8b92a8" : "#6b7280";
+      const legendColor = isDark ? "#9ca3af" : "#6b7280";
+      const gridColor = isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)";
 
-      // 1. Doughnut Chart
-      const dCanvas = document.getElementById("dashDoughnut");
-      if (dCanvas) {
-        if (doughnutChartInstance) doughnutChartInstance.destroy();
-        doughnutChartInstance = new Chart(dCanvas, {
+      // 1. Doughnut Chart (Exact from templates/dashboard.html)
+      const pieCanvas = document.getElementById("pieChart");
+      if (pieCanvas) {
+        if (pieChartInstance) pieChartInstance.destroy();
+        pieChartInstance = new Chart(pieCanvas, {
           type: "doughnut",
           data: {
             labels: ["Positive", "Negative", "Neutral"],
             datasets: [{
-              data: [pos || 1, neg || 0, neu || 0],
-              backgroundColor: ["#10b981", "#ef4444", "#f59e0b"],
-              borderWidth: 2,
-              borderColor: isDark ? "#131a26" : "#ffffff"
+              data: [pos, neg, neu],
+              backgroundColor: ["#059669", "#dc2626", "#d97706"],
+              borderWidth: 0,
+              hoverOffset: 6,
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              legend: { position: "bottom", labels: { color: textColor, font: { family: "Outfit" } } }
+              legend: {
+                position: "bottom",
+                labels: { color: legendColor, font: { family: "Outfit", size: 12 }, padding: 16 }
+              }
             }
           }
         });
       }
 
-      // 2. Line Chart (Recent 30)
-      const lCanvas = document.getElementById("dashLine");
-      if (lCanvas) {
+      // 2. Line Chart (Exact from templates/dashboard.html: Pos=1, Neu=0, Neg=-1)
+      const lineCanvas = document.getElementById("lineChart");
+      if (lineCanvas) {
         if (lineChartInstance) lineChartInstance.destroy();
-        const trend = records.slice(0, 30).reverse();
-        const labels = trend.map((_, i) => "#" + (i + 1));
-        const confs = trend.map(r => r.confidence);
+        const chartData = records.slice(0, 30).reverse();
+        const values = chartData.map(d => d.label === "Positive" ? 1 : (d.label === "Negative" ? -1 : 0));
 
-        lineChartInstance = new Chart(lCanvas, {
+        lineChartInstance = new Chart(lineCanvas, {
           type: "line",
           data: {
-            labels: labels.length ? labels : ["#1", "#2"],
+            labels: chartData.map((_, i) => i + 1),
             datasets: [{
-              label: "Confidence %",
-              data: confs.length ? confs : [85, 92],
-              borderColor: "#6366f1",
-              backgroundColor: "rgba(99, 102, 241, 0.12)",
-              tension: 0.35,
-              fill: true
+              label: "Sentiment",
+              data: values,
+              borderColor: "#2563eb",
+              backgroundColor: "rgba(37,99,235,.07)",
+              tension: 0.4,
+              fill: true,
+              pointRadius: 3,
+              pointBackgroundColor: "#2563eb",
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
             scales: {
-              y: { min: 0, max: 100, ticks: { color: textColor } },
-              x: { ticks: { color: textColor } }
-            },
-            plugins: {
-              legend: { position: "bottom", labels: { color: textColor, font: { family: "Outfit" } } }
+              y: {
+                min: -1.2,
+                max: 1.2,
+                ticks: {
+                  color: "#9ca3af",
+                  callback: v => v === 1 ? "Pos" : (v === 0 ? "Neu" : (v === -1 ? "Neg" : ""))
+                },
+                grid: { color: gridColor }
+              },
+              x: {
+                ticks: { color: "#9ca3af" },
+                grid: { display: false }
+              }
             }
           }
         });
