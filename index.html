@@ -1534,11 +1534,12 @@
 
       <div class="input-card" style="margin-bottom: 24px;">
         <label style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text2);">Batch Texts (One per line)</label>
-        <textarea id="batchInputText" style="min-height: 200px; font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem;" placeholder="Enter one text per line (up to 50)…" autocomplete="off"></textarea>
+        <textarea id="batchInputText" style="min-height: 200px; font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem;" placeholder="Enter one text per line (up to 50)..." autocomplete="off"></textarea>
         
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-          <div style="display: flex; gap: 10px;">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             <button type="button" class="btn-analyse" onclick="executeBatchAnalysis()">Analyse Batch</button>
+            <button type="button" class="btn-ghost" onclick="clearBatchInput()">Clear</button>
             <button type="button" class="btn-ghost" onclick="loadAlexaPresetBatch()">Load 8 Alexa Samples</button>
           </div>
           <button type="button" class="btn-ghost" onclick="exportBatchToCSV()">💾 Export CSV</button>
@@ -2322,6 +2323,19 @@
       `).join("");
 
       showFlash(`Batch complete: analysed ${batchMemory.length} texts successfully.`, "success");
+    }
+
+    function clearBatchInput() {
+      const el = document.getElementById("batchInputText");
+      if (el) el.value = "";
+      const sum = document.getElementById("batchSummarySection");
+      if (sum) { sum.style.display = "none"; sum.innerHTML = ""; }
+      const tbl = document.getElementById("batchTableWrap");
+      if (tbl) tbl.style.display = "none";
+      const rows = document.getElementById("batchTableRows");
+      if (rows) rows.innerHTML = "";
+      batchMemory = [];
+      showFlash("Batch input cleared.", "info");
     }
 
     function loadAlexaPresetBatch() {
